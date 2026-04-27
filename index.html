@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propiedades Premium | Gestión de Alquileres</title>
+    <meta name="description" content="Dashboard premium para gestión y visualización de propiedades en alquiler.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Chart.js & html2pdf.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1>RentLux</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="#" class="nav-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Reportes
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Ajustes
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-titles">
+                    <h2>Panel General</h2>
+                    <p>Gestiona tus propiedades y cobros</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="btn-add-property">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Nueva Propiedad
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://i.pravatar.cc/150?img=11" alt="Usuario" class="avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Stats -->
+            <section class="stats-grid">
+                <div class="stat-card glass-panel">
+                    <div class="stat-icon income-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div class="stat-details">
+                        <p class="stat-label">Ingresos Mensuales</p>
+                        <h3 class="stat-value" id="stat-income">$0</h3>
+                    </div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="stat-icon properties-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                    </div>
+                    <div class="stat-details">
+                        <p class="stat-label">Propiedades Activas</p>
+                        <h3 class="stat-value" id="stat-count">0</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profitability Chart -->
+            <section class="chart-section glass-panel" style="margin-bottom: 48px; padding: 24px;">
+                <div class="section-header">
+                    <h3>Reporte de Rentabilidad (Ingresos vs Egresos)</h3>
+                </div>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="profitChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Properties List -->
+            <section class="properties-section">
+                <div class="section-header">
+                    <h3>Mis Propiedades</h3>
+                    <div class="filters">
+                        <select id="filter-status" class="select-premium">
+                            <option value="all">Todos los estados</option>
+                            <option value="rented">Alquilados</option>
+                            <option value="available">Disponibles</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="properties-grid" id="properties-grid">
+                    <!-- Cards injected by main.js -->
+                </div>
+            </section>
+
+            <!-- Service Tickets -->
+            <section class="tickets-section glass-panel" style="margin-top: 48px; padding: 24px;">
+                <div class="section-header">
+                    <h3>Tickets de Servicio</h3>
+                    <button class="btn btn-secondary" id="btn-add-ticket" style="font-size:0.85rem; padding: 6px 12px;">+ Nuevo Ticket</button>
+                </div>
+                <div id="tickets-list" style="display:flex; flex-direction:column; gap:12px;">
+                    <!-- Tickets injected by main.js -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for New Property -->
+    <div class="modal-overlay" id="property-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Agregar Propiedad</h3>
+                <button class="btn-close" id="btn-close-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="property-form">
+                    <div class="form-group">
+                        <label for="prop-name">Nombre / Dirección del Inmueble</label>
+                        <input type="text" id="prop-name" required placeholder="Ej. Apto 302, Edificio Aurora">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prop-rooms">N° Habitaciones</label>
+                            <input type="number" id="prop-rooms" required min="1" placeholder="Ej. 3">
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-status">Estado</label>
+                            <select id="prop-status" required>
+                                <option value="rented">Alquilado</option>
+                                <option value="available">Disponible</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prop-amount">Monto de Renta</label>
+                            <input type="number" id="prop-amount" required min="0" placeholder="Ej. 1200">
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-frequency">Frecuencia de Pago</label>
+                            <select id="prop-frequency" required>
+                                <option value="Mensual">Mensual</option>
+                                <option value="Quincenal">Quincenal</option>
+                                <option value="Semanal">Semanal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prop-method">Método de Pago Preferido</label>
+                            <select id="prop-method" required>
+                                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                                <option value="Zelle">Zelle / App</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-end-date">Fin del Arriendo</label>
+                            <input type="date" id="prop-end-date">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prop-doc-cedula">Cédula (PNG/PDF)</label>
+                            <input type="file" id="prop-doc-cedula" accept=".png, .jpg, .jpeg, .pdf" style="font-size: 0.85rem; padding: 9px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-doc-carta">Carta Recomendación</label>
+                            <input type="file" id="prop-doc-carta" accept=".png, .jpg, .jpeg, .pdf" style="font-size: 0.85rem; padding: 9px;">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Propiedad</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for New Ticket -->
+    <div class="modal-overlay" id="ticket-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Reportar Daño / Ticket</h3>
+                <button class="btn-close" id="btn-close-ticket-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ticket-form">
+                    <div class="form-group">
+                        <label for="ticket-prop">Propiedad Afectada</label>
+                        <select id="ticket-prop" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-desc">Descripción del Problema</label>
+                        <input type="text" id="ticket-desc" required placeholder="Ej. Falla eléctrica en la cocina">
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-cost">Costo Estimado / Real (Egreso)</label>
+                        <input type="number" id="ticket-cost" required min="0" value="0">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-ticket-modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Crear Ticket</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Template for Receipt PDF -->
+    <div id="receipt-template" style="display:none; position:absolute; top:-9999px; left:-9999px; background:white; color:black; width:800px; padding:40px; font-family:Arial,sans-serif;">
+        <div style="display:flex; justify-content:space-between; border-bottom:2px solid #eee; padding-bottom:20px; margin-bottom:20px;">
+            <div>
+                <h1 style="color:#3b82f6; margin:0;">RentLux</h1>
+                <p style="color:#666; margin:4px 0;">Gestión de Propiedades</p>
+            </div>
+            <div style="text-align:right;">
+                <h2 style="margin:0;">RECIBO DE ARRIENDO</h2>
+                <p id="receipt-date" style="color:#666; margin:4px 0;"></p>
+                <p id="receipt-id" style="color:#666; margin:4px 0; font-weight:bold;"></p>
+            </div>
+        </div>
+        <div style="margin-bottom:30px;">
+            <h3 style="margin-bottom:8px; color:#333;">Detalles del Inquilino / Propiedad</h3>
+            <p id="receipt-prop" style="margin:4px 0; font-size:16px;"></p>
+        </div>
+        <table style="width:100%; border-collapse:collapse; margin-bottom:40px;">
+            <tr style="background:#f8fafc; text-align:left;">
+                <th style="padding:12px; border-bottom:1px solid #ddd;">Concepto</th>
+                <th style="padding:12px; border-bottom:1px solid #ddd; text-align:right;">Monto</th>
+            </tr>
+            <tr>
+                <td id="receipt-concept" style="padding:12px; border-bottom:1px solid #ddd;"></td>
+                <td id="receipt-amount" style="padding:12px; border-bottom:1px solid #ddd; text-align:right; font-weight:bold;"></td>
+            </tr>
+        </table>
+        <div style="margin-top:60px; border-top:1px solid #ccc; width:200px; text-align:center; padding-top:10px;">
+            <p style="margin:0; color:#666;">Firma Autorizada</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
+</body>
+</html>

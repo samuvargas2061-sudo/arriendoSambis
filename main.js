@@ -762,19 +762,21 @@ function updateChart(income, costs) {
 }
 
 window.generateReceipt = function(dataOrId) {
-    console.log("📄 Generando recibo...", dataOrId);
+    if (typeof html2pdf === 'undefined') {
+        alert("Error: Librería PDF no cargada. Reintenta en unos segundos.");
+        return;
+    }
+
     let data = {};
     if (typeof dataOrId === 'object' && dataOrId !== null) {
         data = dataOrId;
     } else {
         const prop = properties.find(p => String(p.id) === String(dataOrId));
-        if (!prop) return alert("No se encontró la propiedad.");
+        if (!prop) return alert("Propiedad no encontrada.");
         data = {
             name: prop.name,
             tenantName: prop.tenantName || 'Inquilino',
-            rentAmount: prop.rentAmount || 0,
-            paymentMethod: prop.paymentMethod || 'Efectivo',
-            paymentFrequency: prop.paymentFrequency
+            rentAmount: prop.rentAmount || 0
         };
     }
     
@@ -782,41 +784,56 @@ window.generateReceipt = function(dataOrId) {
     const template = document.getElementById('receipt-template');
     if (!loading || !template) return;
 
-    // Rellenar datos
-    document.getElementById('receipt-date').innerText = new Date().toLocaleDateString('es-CO');
-    document.getElementById('receipt-id').innerText = 'REC-' + Math.floor(Math.random()*90000 + 10000);
-    document.getElementById('receipt-prop').innerText = `PROPIEDAD: ${data.name}\nARRENDATARIO: ${data.tenantName}`;
-    document.getElementById('receipt-concept').innerText = `Pago de Arriendo - Periodo: ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
-    document.getElementById('receipt-amount').innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
-    
-    // MOSTRAR PARA CAPTURA (Fuerza al navegador a renderizar)
-    loading.style.display = 'flex';
-    template.style.display = 'block';
-    
-    const opt = {
-        margin:       0.5,
-        filename:     `Recibo_${data.name}.pdf`,
-        image:        { type: 'jpeg', quality: 1.0 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            logging: false
-        },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-    
-    // Pausa para asegurar que el usuario vea el recibo y el navegador lo pinte
-    setTimeout(() => {
-        html2pdf().set(opt).from(template).save().then(() => {
-            console.log("✅ PDF Guardado");
-            loading.style.display = 'none';
-            template.style.display = 'none';
-        }).catch(err => {
-            console.error(err);
-            loading.style.display = 'none';
-            template.style.display = 'none';
-            alert("Error al generar PDF");
-        });
-    }, 1500);
+    // Inyectar datos con seguridad
+    try {
+        document.getElementById('receipt-date').innerText = new Date().toLocaleDateString('es-CO');
+        document.getElementById('receipt-id').innerText = 'N° ' + Math.floor(Date.now() / 1000).toString().slice(-6);
+        document.getElementById('receipt-prop').innerText = `PROPIEDAD: ${data.name}\nINQUILINO: ${data.tenantName}`;
+        document.getElementById('receipt-concept').innerText = `PAGO DE ARRIENDO - ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
+        document.getElementById('receipt-amount').innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
+        
+        // MOSTRAR TODO
+        loading.style.display = 'flex';
+        template.style.display = 'block';
+        template.style.opacity = '1';
+        
+        const opt = {
+            margin: 0.5,
+            filename: `Recibo_${data.name.replace(/\s+/g, '_')}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: true 
+            },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        
+        // Dar tiempo para que el DOM se "estabilice" visualmente
+        setTimeout(() => {
+            html2pdf().set(opt).from(template).save().then(() => {
+                loading.style.display = 'none';
+                template.style.display = 'none';
+            }).catch(err => {
+                console.error("Error html2pdf:", err);
+                loading.style.display = 'none';
+                template.style.display = 'none';
+            });
+        }, 2000); // 2 segundos de seguridad total
+
+        // Failsafe: Si después de 10 segundos sigue cargando, quitarlo
+        setTimeout(() => {
+            if (loading.style.display === 'flex') {
+                loading.style.display = 'none';
+                template.style.display = 'none';
+                alert("La generación tardó demasiado. Por favor, intenta de nuevo.");
+            }
+        }, 10000);
+
+    } catch (e) {
+        console.error("Error en llenado de datos:", e);
+        loading.style.display = 'none';
+        template.style.display = 'none';
+    }
 };

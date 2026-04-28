@@ -528,15 +528,16 @@
         </div>
     </div>
 
-    <!-- Overlay de Procesamiento -->
-    <div id="pdf-loading" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif;">
-        <div style="width:50px; height:50px; border:5px solid #f3f3f3; border-top:5px solid #3498db; border-radius:50%; animation: spin 1s linear infinite; margin-bottom:20px;"></div>
-        <p>Generando Recibo...</p>
+    <!-- Overlay de Procesamiento (Blindado) -->
+    <div id="pdf-loading" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:99999; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif;">
+        <div style="width:60px; height:60px; border:6px solid #f3f3f3; border-top:6px solid #3b82f6; border-radius:50%; animation: spin 1s linear infinite; margin-bottom:20px;"></div>
+        <h2 style="margin:0; font-size:1.5rem;">Procesando Recibo...</h2>
+        <p style="opacity:0.7; margin-top:10px;">Por favor, no cierres esta ventana.</p>
         <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
     </div>
 
-    <!-- Template para Recibo PDF (Modal de Generación) -->
-    <div id="receipt-template" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:750px; padding:40px; background:white; color:black !important; font-family: Arial, sans-serif; z-index:20001; box-shadow:0 0 50px rgba(0,0,0,0.5); border-radius:8px;">
+    <!-- Template para Recibo PDF (Visibilidad Forzada para Captura) -->
+    <div id="receipt-template" style="display:none; position:fixed; top:20px; left:50%; margin-left:-375px; width:750px; padding:40px; background:white !important; color:black !important; font-family: Arial, sans-serif; z-index:100000; box-shadow:0 0 100px rgba(0,0,0,0.5); border:1px solid #ddd; border-radius:12px;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #3b82f6; padding-bottom:20px; margin-bottom:20px;">
             <div>
                 <h1 style="color:#3b82f6; margin:0; font-size:28px;">RENTLUX</h1>

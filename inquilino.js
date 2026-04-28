@@ -1,9 +1,7 @@
 // inquilino.js - Portal del Inquilino con integración Firebase
 
-// Datos locales de respaldo (para cuando Firebase no está configurado)
-let tenantTickets = [
-    { id: 1, desc: "Gotera en el baño principal", category: "Plomería", status: "resolved", date: "2026-04-10" }
-];
+// Sin datos predeterminados — los reportes se cargan desde Firebase
+let tenantTickets = [];
 
 // Identificador de la propiedad del inquilino (ajusta según corresponda)
 const TENANT_PROPERTY_ID = 1;
@@ -52,16 +50,19 @@ function setupEventListeners() {
     reportForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const category = document.getElementById('report-category').value;
-        const desc     = document.getElementById('report-desc').value;
+        const category  = document.getElementById('report-category').value;
+        const desc      = document.getElementById('report-desc').value;
+        const apartment = document.getElementById('report-apartment').value;
 
         const newTicket = {
-            propId:   TENANT_PROPERTY_ID,
-            category: category,
-            desc:     desc,
-            status:   "pending",
-            date:     new Date().toISOString().split('T')[0],
-            source:   "inquilino" // Marcamos que viene del portal del inquilino
+            apartment: apartment,
+            propId:    TENANT_PROPERTY_ID,
+            category:  category,
+            desc:      desc,
+            cost:      0,
+            status:    "pending",
+            date:      new Date().toISOString().split('T')[0],
+            source:    "inquilino"
         };
 
         const btnSubmit     = reportForm.querySelector('button[type="submit"]');
@@ -98,15 +99,17 @@ function setupEventListeners() {
 // FIREBASE: Escuchar tickets del inquilino en tiempo real
 // ============================================================
 function subscribeToMyTickets() {
+    // Escucha todos los tickets del inquilino (sin filtro compuesto para evitar requerir índice)
     window.db.collection('tickets')
         .where('source', '==', 'inquilino')
-        .orderBy('date', 'desc')
         .onSnapshot(snapshot => {
-            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const data = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
             renderTickets(data);
         }, err => {
             console.error('Error al escuchar tickets del inquilino:', err);
-            renderTickets(tenantTickets); // fallback local
+            renderTickets(tenantTickets);
         });
 }
 
@@ -145,7 +148,10 @@ function renderTickets(list) {
                 </span>
                 <span style="font-size:0.8rem; color:var(--text-secondary);">${ticket.date}</span>
             </div>
-            <p style="font-weight:500; font-size:1rem; margin-bottom:12px;">${ticket.desc}</p>
+            <p style="font-weight:500; font-size:1rem; margin-bottom:12px;">
+                ${ticket.apartment ? `<span style="color:var(--accent-primary); font-size:0.8rem; margin-right:8px;">${ticket.apartment}</span>` : ''}
+                ${ticket.desc}
+            </p>
             <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:12px;">
                 <span style="font-size:0.85rem; background:${bg}; color:${color}; padding:4px 10px; border-radius:12px; font-weight:500;">
                     ${label}

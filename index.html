@@ -25,19 +25,27 @@
                 <h1>RentLux</h1>
             </div>
             <nav class="main-nav">
-                <a href="#" class="nav-item active">
+                <a href="index.html" class="nav-item active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                     Dashboard
                 </a>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    Reportes
+                <a href="portal-inquilino-pro.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Portal Inquilino
                 </a>
                 <a href="#" class="nav-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     Ajustes
                 </a>
             </nav>
+
+            <div class="sidebar-footer" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-glass);">
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Enlaces del Inquilino</p>
+                <a href="portal-inquilino-pro.html" target="_blank" class="nav-item" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-primary); border: 1px solid rgba(59, 130, 246, 0.2);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    Portal Pro 🚀
+                </a>
+            </div>
         </aside>
 
         <!-- Main Content -->
@@ -109,6 +117,34 @@
                 </div>
             </section>
 
+            <!-- Payments History Section -->
+            <section class="payments-section glass-panel" style="margin-top: 48px; padding: 24px;">
+                <div class="section-header">
+                    <h3>Historial de Pagos</h3>
+                    <div style="display:flex; gap:12px;">
+                        <button class="btn btn-secondary" id="btn-calc-proportional" style="font-size:0.85rem; padding: 6px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border-glass);">🧮 Calc. Proporcional</button>
+                        <button class="btn btn-primary" id="btn-add-payment" style="font-size:0.85rem; padding: 6px 12px;">💸 Registrar Pago</button>
+                    </div>
+                </div>
+                <div class="table-container" style="overflow-x:auto; margin-top:16px;">
+                    <table style="width:100%; border-collapse:collapse; color:var(--text-primary); font-size:0.9rem;">
+                        <thead>
+                            <tr style="border-bottom:1px solid var(--border-glass); text-align:left;">
+                                <th style="padding:12px;">Propiedad</th>
+                                <th style="padding:12px;">Inquilino</th>
+                                <th style="padding:12px;">Mes/Periodo</th>
+                                <th style="padding:12px;">Monto</th>
+                                <th style="padding:12px;">Fecha</th>
+                                <th style="padding:12px;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payments-list">
+                            <!-- Payments injected by main.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Service Tickets -->
             <section class="tickets-section glass-panel" style="margin-top: 48px; padding: 24px;">
                 <div class="section-header">
@@ -136,6 +172,17 @@
                     <div class="form-group">
                         <label for="prop-name">Nombre / Dirección del Inmueble</label>
                         <input type="text" id="prop-name" required placeholder="Ej. Apto 302, Edificio Aurora">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prop-tenant-name">Nombre del Inquilino</label>
+                            <input type="text" id="prop-tenant-name" placeholder="Ej. Carlos Gómez">
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-tenant-phone">Teléfono / WhatsApp</label>
+                            <input type="tel" id="prop-tenant-phone" placeholder="Ej. +57 300 123 4567">
+                        </div>
                     </div>
                     
                     <div class="form-row">
@@ -165,6 +212,10 @@
                                 <option value="Semanal">Semanal</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="prop-pay-day">Día de Pago (1-31)</label>
+                            <input type="number" id="prop-pay-day" min="1" max="31" placeholder="Ej. 5" value="5">
+                        </div>
                     </div>
 
                     <div class="form-row">
@@ -180,6 +231,13 @@
                         <div class="form-group">
                             <label for="prop-end-date">Fin del Arriendo</label>
                             <input type="date" id="prop-end-date">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label for="prop-contract-terms">Condiciones del Contrato (Entrega, reglas, etc.)</label>
+                            <textarea id="prop-contract-terms" placeholder="Ej. Entregar pintado, sin humedades, paz y salvo de servicios..." style="width:100%; min-height:80px; background:rgba(0,0,0,0.2); border:1px solid var(--border-glass); border-radius:var(--border-radius-sm); color:white; padding:12px;"></textarea>
                         </div>
                     </div>
 
@@ -265,6 +323,248 @@
         <div style="margin-top:60px; border-top:1px solid #ccc; width:200px; text-align:center; padding-top:10px;">
             <p style="margin:0; color:#666;">Firma Autorizada</p>
         </div>
+    </div>
+
+    <!-- Modal for Register Payment -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Registrar Pago de Arriendo</h3>
+                <button class="btn-close" id="btn-close-payment-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label for="pay-prop">Seleccionar Propiedad</label>
+                        <select id="pay-prop" required class="select-premium"></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pay-period">Mes / Periodo de Pago</label>
+                            <input type="month" id="pay-period" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pay-amount">Monto Recibido</label>
+                            <input type="number" id="pay-amount" required min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pay-method">M\u00e9todo de Pago</label>
+                        <select id="pay-method" required>
+                            <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta de Cr\u00e9dito">Tarjeta de Cr\u00e9dito</option>
+                            <option value="Zelle">Zelle / App</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-payment-modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Registrar y Generar Recibo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Proportional Calculator -->
+    <div class="modal-overlay" id="calc-modal">
+        <div class="modal glass-panel" style="max-width:400px;">
+            <div class="modal-header">
+                <h3>Calculadora Proporcional</h3>
+                <button class="btn-close" id="btn-close-calc-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Renta Mensual Total</label>
+                    <input type="number" id="calc-rent" placeholder="Ej. 1200">
+                </div>
+                <div class="form-group">
+                    <label>D\u00edas a Cobrar (de 30)</label>
+                    <input type="number" id="calc-days" placeholder="Ej. 15">
+                </div>
+                <div style="background:rgba(255,255,255,0.05); padding:16px; border-radius:8px; margin-top:16px; text-align:center;">
+                    <p style="font-size:0.8rem; color:var(--text-secondary);">Monto Proporcional:</p>
+                    <h2 id="calc-result" style="color:var(--accent-primary);">$0</h2>
+                </div>
+                <button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="calculateProp()">Calcular</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Edit Property -->
+    <div class="modal-overlay" id="edit-property-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Editar Propiedad</h3>
+                <button class="btn-close" id="btn-close-edit-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-property-form">
+                    <input type="hidden" id="edit-prop-id">
+                    <div class="form-group">
+                        <label for="edit-prop-name">Nombre / Direcci\u00f3n del Inmueble</label>
+                        <input type="text" id="edit-prop-name" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-prop-tenant-name">Nombre del Inquilino</label>
+                            <input type="text" id="edit-prop-tenant-name" placeholder="Ej. Carlos G\u00f3mez">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-prop-tenant-phone">Tel\u00e9fono / WhatsApp</label>
+                            <input type="tel" id="edit-prop-tenant-phone" placeholder="Ej. +57 300 123 4567">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-prop-rooms">N\u00b0 Habitaciones</label>
+                            <input type="number" id="edit-prop-rooms" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-prop-status">Estado</label>
+                            <select id="edit-prop-status" required>
+                                <option value="rented">Alquilado</option>
+                                <option value="available">Disponible</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-prop-amount">Monto de Renta</label>
+                            <input type="number" id="edit-prop-amount" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-prop-frequency">Frecuencia de Pago</label>
+                            <select id="edit-prop-frequency" required>
+                                <option value="Mensual">Mensual</option>
+                                <option value="Quincenal">Quincenal</option>
+                                <option value="Semanal">Semanal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-prop-pay-day">Día de Pago (1-31)</label>
+                            <input type="number" id="edit-prop-pay-day" min="1" max="31">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-prop-method">M\u00e9todo de Pago</label>
+                            <select id="edit-prop-method" required>
+                                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Tarjeta de Cr\u00e9dito">Tarjeta de Cr\u00e9dito</option>
+                                <option value="Zelle">Zelle / App</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-prop-end-date">Fin del Arriendo</label>
+                            <input type="date" id="edit-prop-end-date">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label for="edit-prop-contract-terms">Condiciones del Contrato</label>
+                            <textarea id="edit-prop-contract-terms" style="width:100%; min-height:80px; background:rgba(0,0,0,0.2); border:1px solid var(--border-glass); border-radius:var(--border-radius-sm); color:white; padding:12px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="justify-content:space-between;">
+                        <button type="button" class="btn btn-danger" id="btn-delete-prop" style="background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.2);">Eliminar</button>
+                        <div style="display:flex; gap:12px;">
+                            <button type="button" class="btn btn-secondary" id="btn-cancel-edit-modal-2">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Edit Payment -->
+    <div class="modal-overlay" id="edit-payment-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Editar Registro de Pago</h3>
+                <button class="btn-close" id="btn-close-edit-payment-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-payment-form">
+                    <input type="hidden" id="edit-pay-id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Periodo (Mes/Año)</label>
+                            <input type="text" id="edit-pay-period" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Monto Recibido</label>
+                            <input type="number" id="edit-pay-amount" required min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="edit-pay-method" required>
+                            <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                            <option value="Zelle">Zelle / App</option>
+                        </select>
+                    </div>
+                    <div class="form-actions" style="justify-content:space-between;">
+                        <button type="button" class="btn btn-danger" id="btn-delete-payment" style="background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.2);">Eliminar Pago</button>
+                        <div style="display:flex; gap:12px;">
+                            <button type="button" class="btn btn-secondary" id="btn-cancel-edit-payment-modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template para Recibo PDF (Oculto del usuario, visible para el DOM) -->
+    <div id="receipt-template" style="position:absolute; left:-9999px; top:0; width:700px; padding:40px; background:white; color:black; font-family: 'Arial', sans-serif; border: 1px solid #eee; display:block;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #3b82f6; padding-bottom:20px; margin-bottom:20px;">
+            <div>
+                <h1 style="color:#3b82f6; margin:0; font-size:28px;">RENTLUX</h1>
+                <p style="margin:5px 0; font-size:12px; color:#666;">Sistema de Gestión de Alquileres Premium</p>
+            </div>
+            <div style="text-align:right;">
+                <h2 style="margin:0; font-size:18px;">RECIBO DE ARRIENDO</h2>
+                <p id="receipt-id" style="margin:5px 0; font-weight:bold; color:#3b82f6;"></p>
+                <p id="receipt-date" style="margin:0; font-size:14px;"></p>
+            </div>
+        </div>
+        
+        <div style="margin-bottom:30px; line-height:1.6;">
+            <p id="receipt-prop" style="font-size:16px; margin-bottom:15px; white-space:pre-line;"></p>
+            <table style="width:100%; border-collapse:collapse; margin-top:20px;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:12px; text-align:left; border:1px solid #e2e8f0;">CONCEPTO</th>
+                        <th style="padding:12px; text-align:right; border:1px solid #e2e8f0;">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="receipt-concept" style="padding:12px; border:1px solid #e2e8f0;"></td>
+                        <td id="receipt-amount" style="padding:12px; text-align:right; border:1px solid #e2e8f0; font-weight:bold; font-size:18px;"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin-top:50px; display:flex; justify-content:space-between;">
+            <div style="width:200px; border-top:1px solid #000; text-align:center; padding-top:10px; font-size:12px;">Firma Arrendador</div>
+            <div style="width:200px; border-top:1px solid #000; text-align:center; padding-top:10px; font-size:12px;">Firma Arrendatario</div>
+        </div>
+        <p style="text-align:center; margin-top:40px; font-size:10px; color:#999;">Este documento es un comprobante de pago digital generado por RentLux.</p>
     </div>
 
     <!-- Firebase SDK -->

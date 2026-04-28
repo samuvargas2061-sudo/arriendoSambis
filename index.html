@@ -528,8 +528,8 @@
         </div>
     </div>
 
-    <!-- Template para Recibo PDF (Oculto del usuario, visible para el DOM) -->
-    <div id="receipt-template" style="position:absolute; left:-9999px; top:0; width:700px; padding:40px; background:white; color:black; font-family: 'Arial', sans-serif; border: 1px solid #eee; display:block;">
+    <!-- Template para Recibo PDF (Optimizado para captura) -->
+    <div id="receipt-template" style="position:fixed; top:0; left:0; width:750px; padding:40px; background:white; color:black !important; font-family: Arial, sans-serif; visibility:hidden; z-index:-1; pointer-events:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #3b82f6; padding-bottom:20px; margin-bottom:20px;">
             <div>
                 <h1 style="color:#3b82f6; margin:0; font-size:28px;">RENTLUX</h1>

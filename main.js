@@ -762,14 +762,14 @@ function updateChart(income, costs) {
 }
 
 window.generateReceipt = function(dataOrId) {
-    console.log("📄 Iniciando generación de recibo...", dataOrId);
+    console.log("📄 Generando recibo profesional...", dataOrId);
     let data = {};
     if (typeof dataOrId === 'object' && dataOrId !== null) {
         data = dataOrId;
     } else {
         const prop = properties.find(p => String(p.id) === String(dataOrId));
         if (!prop) {
-            console.error("❌ Error: No se encontró la propiedad con ID:", dataOrId);
+            console.error("❌ Error: No se encontró la propiedad");
             return;
         }
         data = {
@@ -781,60 +781,50 @@ window.generateReceipt = function(dataOrId) {
         };
     }
     
-    // Rellenar template
+    // Rellenar template con datos frescos
     const dateEl = document.getElementById('receipt-date');
     const idEl = document.getElementById('receipt-id');
     const propEl = document.getElementById('receipt-prop');
     const conceptEl = document.getElementById('receipt-concept');
     const amountEl = document.getElementById('receipt-amount');
 
-    if (dateEl) dateEl.innerText = new Date().toLocaleDateString();
+    if (dateEl) dateEl.innerText = new Date().toLocaleDateString('es-CO');
     if (idEl) idEl.innerText = 'Recibo N° ' + Math.floor(Math.random()*9000 + 1000);
-    if (propEl) propEl.innerText = `PROPIEDAD: ${data.name}\nINQUILINO: ${data.tenantName}`;
+    if (propEl) propEl.innerText = `PROPIEDAD: ${data.name}\nARRENDATARIO: ${data.tenantName}`;
     if (conceptEl) conceptEl.innerText = `Pago de Arriendo - Periodo: ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
     if (amountEl) amountEl.innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
     
     const element = document.getElementById('receipt-template');
-    if (!element) {
-        console.error("❌ Error: No se encontró el elemento 'receipt-template'");
-        return;
-    }
+    if (!element) return;
 
-    // Asegurar visibilidad para el motor de captura (mover al centro brevemente)
-    const originalLeft = element.style.left;
-    const originalDisplay = element.style.display;
-    
+    // PREPARACIÓN CRÍTICA PARA CAPTURA
+    element.style.visibility = 'visible';
+    element.style.zIndex = '10000';
     element.style.display = 'block';
-    element.style.left = '0';
-    element.style.zIndex = '9999';
-    element.style.opacity = '1';
-    element.style.minHeight = '800px'; // Garantizar altura para captura
     
     const opt = {
-        margin:       0.2,
-        filename:     `Recibo_${(data.name || 'Arriendo').replace(/\s+/g, '_')}.pdf`,
+        margin:       [0.3, 0.3],
+        filename:     `Recibo_${data.name}.pdf`,
         image:        { type: 'jpeg', quality: 1.0 },
         html2canvas:  { 
             scale: 2, 
             useCORS: true,
+            logging: false,
             letterRendering: true,
-            scrollY: 0,
-            scrollX: 0,
-            windowWidth: 800,
-            windowHeight: 1000
+            backgroundColor: '#ffffff'
         },
         jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
     
+    // Esperar un poco más para asegurar que el DOM se pinte y las fuentes carguen
     setTimeout(() => {
         html2pdf().set(opt).from(element).save().then(() => {
-            console.log("✅ Recibo generado con éxito");
-            element.style.left = originalLeft;
-            element.style.display = originalDisplay;
+            console.log("✅ Recibo generado.");
+            element.style.visibility = 'hidden';
+            element.style.zIndex = '-1';
         }).catch(err => {
-            console.error("❌ Error durante html2pdf:", err);
-            element.style.left = originalLeft;
-            element.style.display = originalDisplay;
+            console.error("❌ Error PDF:", err);
+            element.style.visibility = 'hidden';
         });
-    }, 800);
+    }, 1200);
 };

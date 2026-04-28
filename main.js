@@ -762,16 +762,13 @@ function updateChart(income, costs) {
 }
 
 window.generateReceipt = function(dataOrId) {
-    console.log("📄 Generando recibo profesional...", dataOrId);
+    console.log("📄 Generando recibo...", dataOrId);
     let data = {};
     if (typeof dataOrId === 'object' && dataOrId !== null) {
         data = dataOrId;
     } else {
         const prop = properties.find(p => String(p.id) === String(dataOrId));
-        if (!prop) {
-            console.error("❌ Error: No se encontró la propiedad");
-            return;
-        }
+        if (!prop) return alert("No se encontró la propiedad.");
         data = {
             name: prop.name,
             tenantName: prop.tenantName || 'Inquilino',
@@ -781,50 +778,45 @@ window.generateReceipt = function(dataOrId) {
         };
     }
     
-    // Rellenar template con datos frescos
-    const dateEl = document.getElementById('receipt-date');
-    const idEl = document.getElementById('receipt-id');
-    const propEl = document.getElementById('receipt-prop');
-    const conceptEl = document.getElementById('receipt-concept');
-    const amountEl = document.getElementById('receipt-amount');
+    const loading = document.getElementById('pdf-loading');
+    const template = document.getElementById('receipt-template');
+    if (!loading || !template) return;
 
-    if (dateEl) dateEl.innerText = new Date().toLocaleDateString('es-CO');
-    if (idEl) idEl.innerText = 'Recibo N° ' + Math.floor(Math.random()*9000 + 1000);
-    if (propEl) propEl.innerText = `PROPIEDAD: ${data.name}\nARRENDATARIO: ${data.tenantName}`;
-    if (conceptEl) conceptEl.innerText = `Pago de Arriendo - Periodo: ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
-    if (amountEl) amountEl.innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
+    // Rellenar datos
+    document.getElementById('receipt-date').innerText = new Date().toLocaleDateString('es-CO');
+    document.getElementById('receipt-id').innerText = 'REC-' + Math.floor(Math.random()*90000 + 10000);
+    document.getElementById('receipt-prop').innerText = `PROPIEDAD: ${data.name}\nARRENDATARIO: ${data.tenantName}`;
+    document.getElementById('receipt-concept').innerText = `Pago de Arriendo - Periodo: ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
+    document.getElementById('receipt-amount').innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
     
-    const element = document.getElementById('receipt-template');
-    if (!element) return;
-
-    // PREPARACIÓN CRÍTICA PARA CAPTURA
-    element.style.visibility = 'visible';
-    element.style.zIndex = '10000';
-    element.style.display = 'block';
+    // MOSTRAR PARA CAPTURA (Fuerza al navegador a renderizar)
+    loading.style.display = 'flex';
+    template.style.display = 'block';
     
     const opt = {
-        margin:       [0.3, 0.3],
+        margin:       0.5,
         filename:     `Recibo_${data.name}.pdf`,
         image:        { type: 'jpeg', quality: 1.0 },
         html2canvas:  { 
             scale: 2, 
             useCORS: true,
-            logging: false,
-            letterRendering: true,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            logging: false
         },
         jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
     
-    // Esperar un poco más para asegurar que el DOM se pinte y las fuentes carguen
+    // Pausa para asegurar que el usuario vea el recibo y el navegador lo pinte
     setTimeout(() => {
-        html2pdf().set(opt).from(element).save().then(() => {
-            console.log("✅ Recibo generado.");
-            element.style.visibility = 'hidden';
-            element.style.zIndex = '-1';
+        html2pdf().set(opt).from(template).save().then(() => {
+            console.log("✅ PDF Guardado");
+            loading.style.display = 'none';
+            template.style.display = 'none';
         }).catch(err => {
-            console.error("❌ Error PDF:", err);
-            element.style.visibility = 'hidden';
+            console.error(err);
+            loading.style.display = 'none';
+            template.style.display = 'none';
+            alert("Error al generar PDF");
         });
-    }, 1200);
+    }, 1500);
 };

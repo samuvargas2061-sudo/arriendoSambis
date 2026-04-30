@@ -813,6 +813,14 @@ window.generateReceipt = function(dataOrId) {
         // Ocultar bordes curvos o sombras en el PDF
         pdfContainer.style.border = 'none';
         pdfContainer.style.boxShadow = 'none';
+        
+        // ¡CRÍTICO PARA HTML2CANVAS! El elemento DEBE estar en el DOM para poder ser renderizado
+        // Lo ponemos en posición absoluta, arriba a la izquierda, pero DETRÁS del overlay de "Cargando"
+        pdfContainer.style.position = 'absolute';
+        pdfContainer.style.top = '0px';
+        pdfContainer.style.left = '0px';
+        pdfContainer.style.zIndex = '99990'; // El loading tiene 99999, así que esto queda oculto al usuario
+        document.body.appendChild(pdfContainer);
 
         const opt = {
             margin: 0.5,
@@ -832,19 +840,21 @@ window.generateReceipt = function(dataOrId) {
             html2pdf().set(opt).from(pdfContainer).save().then(() => {
                 loading.style.display = 'none';
                 template.style.display = 'none';
+                if (document.body.contains(pdfContainer)) document.body.removeChild(pdfContainer);
             }).catch(err => {
                 console.error("Error html2pdf:", err);
                 loading.style.display = 'none';
                 template.style.display = 'none';
+                if (document.body.contains(pdfContainer)) document.body.removeChild(pdfContainer);
             });
         }, 1000); 
 
         // Failsafe: Si después de 10 segundos sigue cargando, quitarlo
         setTimeout(() => {
             if (loading.style.display === 'flex') {
-                template.style.cssText = originalCssText;
                 loading.style.display = 'none';
                 template.style.display = 'none';
+                if (document.body.contains(pdfContainer)) document.body.removeChild(pdfContainer);
                 alert("La generación tardó demasiado. Por favor, intenta de nuevo.");
             }
         }, 10000);

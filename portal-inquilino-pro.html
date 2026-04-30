@@ -127,16 +127,24 @@
             el('search-error').classList.add('hidden');
 
             try {
-                const snap = await db.collection('properties').where('name', '==', searchVal).get();
-                if (snap.empty) {
-                    el('search-error').innerText = "No se encontró el apartamento. Revisa el nombre exacto.";
+                // Obtenemos todas las propiedades para poder hacer una búsqueda más flexible (por número o nombre parcial)
+                const snap = await db.collection('properties').get();
+                
+                const searchLower = searchVal.toLowerCase();
+                const matchedDoc = snap.docs.find(doc => {
+                    const name = (doc.data().name || '').toLowerCase();
+                    return name.includes(searchLower);
+                });
+
+                if (!matchedDoc) {
+                    el('search-error').innerText = "No se encontró el apartamento. Verifica el número o nombre.";
                     el('search-error').classList.remove('hidden');
                     el('btn-search').disabled = false;
                     el('btn-search').innerText = "Consultar Estado";
                     return;
                 }
 
-                currentProperty = { id: snap.docs[0].id, ...snap.docs[0].data() };
+                currentProperty = { id: matchedDoc.id, ...matchedDoc.data() };
                 showDashboard();
             } catch (err) {
                 console.error(err);

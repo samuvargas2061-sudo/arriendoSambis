@@ -792,52 +792,43 @@ window.generateReceipt = function(dataOrId) {
         document.getElementById('receipt-concept').innerText = `PAGO DE ARRIENDO - ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
         document.getElementById('receipt-amount').innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
         
-        // MOSTRAR TODO
+        // MOSTRAR TODO (Solo el loading, no necesitamos mostrar el template original)
         loading.style.display = 'flex';
-        template.style.display = 'block';
-        template.style.opacity = '1';
         
-        // Guardar estilos originales
-        const originalCssText = template.style.cssText;
-        
-        // Modificar para captura segura de html2canvas (sin position fixed ni margins negativos)
-        template.style.position = 'absolute';
-        template.style.top = '0px';
-        template.style.left = '0px';
-        template.style.marginLeft = '0px';
-        template.style.transform = 'none';
-        template.style.boxShadow = 'none';
-        template.style.zIndex = '999999';
+        // Crear un clon perfecto y desvinculado para el PDF
+        const clone = template.cloneNode(true);
+        clone.id = "receipt-clone-pdf";
+        clone.style.display = 'block';
+        clone.style.position = 'relative'; // Sin position fixed
+        clone.style.top = 'auto';
+        clone.style.left = 'auto';
+        clone.style.marginLeft = '0';
+        clone.style.transform = 'none';
+        clone.style.boxShadow = 'none';
+        clone.style.zIndex = '1';
+        clone.style.background = 'white';
 
         const opt = {
-            margin: 0.5,
+            margin: [0.5, 0.5, 0.5, 0.5],
             filename: `Recibo_${data.name.replace(/\s+/g, '_')}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
                 scale: 2, 
                 useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: true,
-                scrollY: 0,
-                windowY: 0
+                backgroundColor: '#ffffff'
             },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
         
-        // Dar tiempo para que el DOM se "estabilice" visualmente
+        // Generar
         setTimeout(() => {
-            html2pdf().set(opt).from(template).save().then(() => {
-                // Restaurar
-                template.style.cssText = originalCssText;
+            html2pdf().set(opt).from(clone).save().then(() => {
                 loading.style.display = 'none';
-                template.style.display = 'none';
             }).catch(err => {
                 console.error("Error html2pdf:", err);
-                template.style.cssText = originalCssText;
                 loading.style.display = 'none';
-                template.style.display = 'none';
             });
-        }, 1500); 
+        }, 1000); 
 
         // Failsafe: Si después de 10 segundos sigue cargando, quitarlo
         setTimeout(() => {

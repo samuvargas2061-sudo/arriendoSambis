@@ -166,7 +166,7 @@
 
             // Cargar Pagos
             const paySnap = await db.collection('payments')
-                .where('propId', '==', currentProperty.id)
+                .where('propId', '==', String(currentProperty.id))
                 .orderBy('date', 'desc')
                 .limit(5)
                 .get();

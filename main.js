@@ -792,50 +792,52 @@ window.generateReceipt = function(dataOrId) {
         document.getElementById('receipt-concept').innerText = `PAGO DE ARRIENDO - ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
         document.getElementById('receipt-amount').innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
         
-        // MOSTRAR EL TEMPLATE EN PANTALLA (Para que el usuario lo vea)
+        // MOSTRAR EL TEMPLATE EN PANTALLA (Para que el usuario lo vea centrado)
         loading.style.display = 'flex';
         template.style.display = 'block';
         template.style.opacity = '1';
         
-        // Crear un clon para la captura PDF perfecta (sin margins/fixed que rompen html2canvas)
-        const clone = template.cloneNode(true);
-        clone.id = "receipt-clone-pdf";
-        clone.style.position = 'absolute'; 
-        clone.style.top = '0px';
-        clone.style.left = '0px';
-        clone.style.marginLeft = '0px';
-        clone.style.transform = 'none';
-        clone.style.boxShadow = 'none';
-        clone.style.zIndex = '1'; // Detrás del loading que tiene 99999
-        document.body.appendChild(clone);
+        // Crear un contenedor 100% limpio y desconectado para el PDF
+        // Esto evita que el scroll de la página, el position:fixed o el z-index corten el recibo
+        const pdfContainer = document.createElement('div');
+        pdfContainer.innerHTML = template.innerHTML; // Copia el contenido ya lleno
+        
+        // Aplicar estilos estrictos al contenedor raíz
+        pdfContainer.style.width = '750px';
+        pdfContainer.style.padding = '40px';
+        pdfContainer.style.background = '#ffffff';
+        pdfContainer.style.color = '#000000';
+        pdfContainer.style.fontFamily = 'Arial, sans-serif';
+        pdfContainer.style.boxSizing = 'border-box';
+        
+        // Ocultar bordes curvos o sombras en el PDF
+        pdfContainer.style.border = 'none';
+        pdfContainer.style.boxShadow = 'none';
 
         const opt = {
-            margin: [0.5, 0.5, 0.5, 0.5],
+            margin: 0.5,
             filename: `Recibo_${data.name.replace(/\s+/g, '_')}.pdf`,
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
                 scale: 2, 
                 useCORS: true,
                 backgroundColor: '#ffffff',
-                scrollY: 0,
-                windowY: 0
+                logging: false
             },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
         
-        // Generar
+        // Generar a partir del contenedor limpio
         setTimeout(() => {
-            html2pdf().set(opt).from(clone).save().then(() => {
+            html2pdf().set(opt).from(pdfContainer).save().then(() => {
                 loading.style.display = 'none';
                 template.style.display = 'none';
-                if (document.body.contains(clone)) document.body.removeChild(clone);
             }).catch(err => {
                 console.error("Error html2pdf:", err);
                 loading.style.display = 'none';
                 template.style.display = 'none';
-                if (document.body.contains(clone)) document.body.removeChild(clone);
             });
-        }, 1500); 
+        }, 1000); 
 
         // Failsafe: Si después de 10 segundos sigue cargando, quitarlo
         setTimeout(() => {

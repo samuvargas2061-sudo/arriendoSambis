@@ -164,11 +164,9 @@
             el('prop-end-date').innerText = `Hasta el ${currentProperty.endDate || 'Pendiente'}`;
             el('prop-contract-terms').innerText = currentProperty.contractTerms || 'Sin condiciones específicas registradas.';
 
-            // Cargar Pagos
+            // Cargar Pagos (Sin orderBy para evitar requerir índice compuesto en Firebase)
             const paySnap = await db.collection('payments')
                 .where('propId', '==', String(currentProperty.id))
-                .orderBy('date', 'desc')
-                .limit(5)
                 .get();
 
             const payList = el('payments-list');
@@ -177,8 +175,12 @@
             if (paySnap.empty) {
                 payList.innerHTML = '<p class="p-6 text-slate-400 text-sm italic text-center">Aún no se han registrado pagos para este inmueble.</p>';
             } else {
-                paySnap.docs.forEach(doc => {
-                    const pay = doc.data();
+                // Ordenar localmente y limitar a 5
+                const payments = paySnap.docs.map(doc => doc.data());
+                payments.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const topPayments = payments.slice(0, 5);
+
+                topPayments.forEach(pay => {
                     const div = document.createElement('div');
                     div.className = "p-6 flex justify-between items-center";
                     div.innerHTML = `

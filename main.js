@@ -792,47 +792,12 @@ window.generateReceipt = function(dataOrId) {
         document.getElementById('receipt-concept').innerText = `PAGO DE ARRIENDO - ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
         document.getElementById('receipt-amount').innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
         
-        // MOSTRAR EL TEMPLATE EN PANTALLA (Para que el usuario lo vea centrado y html2canvas lo capture completo)
+        // MOSTRAR EL TEMPLATE EN PANTALLA (Para pantallazo manual)
         const modalOverlay = document.getElementById('receipt-modal-overlay');
-        loading.style.display = 'flex';
         modalOverlay.style.display = 'flex';
-        
-        const opt = {
-            margin: 0.5,
-            filename: `Recibo_${data.name.replace(/\s+/g, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                backgroundColor: '#ffffff'
-            },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        
-        // Generar el PDF directamente del template visible y estándar
-        setTimeout(() => {
-            html2pdf().set(opt).from(template).save().then(() => {
-                loading.style.display = 'none';
-                modalOverlay.style.display = 'none';
-            }).catch(err => {
-                console.error("Error html2pdf:", err);
-                loading.style.display = 'none';
-                modalOverlay.style.display = 'none';
-            });
-        }, 1000); 
-
-        // Failsafe: Si después de 10 segundos sigue cargando, quitarlo
-        setTimeout(() => {
-            if (loading.style.display === 'flex') {
-                loading.style.display = 'none';
-                modalOverlay.style.display = 'none';
-                alert("La generación tardó demasiado. Por favor, intenta de nuevo.");
-            }
-        }, 10000);
 
     } catch (e) {
         console.error("Error en llenado de datos:", e);
-        loading.style.display = 'none';
         if (document.getElementById('receipt-modal-overlay')) {
             document.getElementById('receipt-modal-overlay').style.display = 'none';
         }

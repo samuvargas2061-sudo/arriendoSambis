@@ -797,6 +797,18 @@ window.generateReceipt = function(dataOrId) {
         template.style.display = 'block';
         template.style.opacity = '1';
         
+        // Clonar el template para html2pdf sin afectar lo que ve el usuario
+        const clone = template.cloneNode(true);
+        clone.id = "receipt-clone-pdf";
+        clone.style.position = "absolute"; // Flow normal para html2canvas
+        clone.style.top = "0px";
+        clone.style.left = "0px";
+        clone.style.marginLeft = "0px";
+        clone.style.boxShadow = "none";
+        clone.style.border = "none";
+        clone.style.zIndex = "-9999";
+        document.body.appendChild(clone);
+
         const opt = {
             margin: 0.5,
             filename: `Recibo_${data.name.replace(/\s+/g, '_')}.pdf`,
@@ -805,28 +817,33 @@ window.generateReceipt = function(dataOrId) {
                 scale: 2, 
                 useCORS: true,
                 backgroundColor: '#ffffff',
-                logging: true 
+                logging: true,
+                scrollY: 0,
+                windowY: 0
             },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
         
         // Dar tiempo para que el DOM se "estabilice" visualmente
         setTimeout(() => {
-            html2pdf().set(opt).from(template).save().then(() => {
+            html2pdf().set(opt).from(clone).save().then(() => {
                 loading.style.display = 'none';
                 template.style.display = 'none';
+                document.body.removeChild(clone);
             }).catch(err => {
                 console.error("Error html2pdf:", err);
                 loading.style.display = 'none';
                 template.style.display = 'none';
+                if (document.body.contains(clone)) document.body.removeChild(clone);
             });
-        }, 2000); // 2 segundos de seguridad total
+        }, 1500); 
 
         // Failsafe: Si después de 10 segundos sigue cargando, quitarlo
         setTimeout(() => {
             if (loading.style.display === 'flex') {
                 loading.style.display = 'none';
                 template.style.display = 'none';
+                if (document.body.contains(clone)) document.body.removeChild(clone);
                 alert("La generación tardó demasiado. Por favor, intenta de nuevo.");
             }
         }, 10000);

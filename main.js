@@ -797,17 +797,17 @@ window.generateReceipt = function(dataOrId) {
         template.style.display = 'block';
         template.style.opacity = '1';
         
-        // Clonar el template para html2pdf sin afectar lo que ve el usuario
-        const clone = template.cloneNode(true);
-        clone.id = "receipt-clone-pdf";
-        clone.style.position = "absolute"; // Flow normal para html2canvas
-        clone.style.top = "0px";
-        clone.style.left = "0px";
-        clone.style.marginLeft = "0px";
-        clone.style.boxShadow = "none";
-        clone.style.border = "none";
-        clone.style.zIndex = "-9999";
-        document.body.appendChild(clone);
+        // Guardar estilos originales
+        const originalCssText = template.style.cssText;
+        
+        // Modificar para captura segura de html2canvas (sin position fixed ni margins negativos)
+        template.style.position = 'absolute';
+        template.style.top = '0px';
+        template.style.left = '0px';
+        template.style.marginLeft = '0px';
+        template.style.transform = 'none';
+        template.style.boxShadow = 'none';
+        template.style.zIndex = '999999';
 
         const opt = {
             margin: 0.5,
@@ -826,24 +826,25 @@ window.generateReceipt = function(dataOrId) {
         
         // Dar tiempo para que el DOM se "estabilice" visualmente
         setTimeout(() => {
-            html2pdf().set(opt).from(clone).save().then(() => {
+            html2pdf().set(opt).from(template).save().then(() => {
+                // Restaurar
+                template.style.cssText = originalCssText;
                 loading.style.display = 'none';
                 template.style.display = 'none';
-                document.body.removeChild(clone);
             }).catch(err => {
                 console.error("Error html2pdf:", err);
+                template.style.cssText = originalCssText;
                 loading.style.display = 'none';
                 template.style.display = 'none';
-                if (document.body.contains(clone)) document.body.removeChild(clone);
             });
         }, 1500); 
 
         // Failsafe: Si después de 10 segundos sigue cargando, quitarlo
         setTimeout(() => {
             if (loading.style.display === 'flex') {
+                template.style.cssText = originalCssText;
                 loading.style.display = 'none';
                 template.style.display = 'none';
-                if (document.body.contains(clone)) document.body.removeChild(clone);
                 alert("La generación tardó demasiado. Por favor, intenta de nuevo.");
             }
         }, 10000);

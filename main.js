@@ -792,36 +792,11 @@ window.generateReceipt = function(dataOrId) {
         document.getElementById('receipt-concept').innerText = `PAGO DE ARRIENDO - ${new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()} 2026`;
         document.getElementById('receipt-amount').innerText = `$${(data.rentAmount || 0).toLocaleString('es-CO')}`;
         
-        // MOSTRAR EL TEMPLATE EN PANTALLA (Para que el usuario lo vea centrado)
+        // MOSTRAR EL TEMPLATE EN PANTALLA (Para que el usuario lo vea centrado y html2canvas lo capture completo)
+        const modalOverlay = document.getElementById('receipt-modal-overlay');
         loading.style.display = 'flex';
-        template.style.display = 'block';
-        template.style.opacity = '1';
+        modalOverlay.style.display = 'flex';
         
-        // Crear un contenedor 100% limpio y desconectado para el PDF
-        // Esto evita que el scroll de la página, el position:fixed o el z-index corten el recibo
-        const pdfContainer = document.createElement('div');
-        pdfContainer.innerHTML = template.innerHTML; // Copia el contenido ya lleno
-        
-        // Aplicar estilos estrictos al contenedor raíz
-        pdfContainer.style.width = '750px';
-        pdfContainer.style.padding = '40px';
-        pdfContainer.style.background = '#ffffff';
-        pdfContainer.style.color = '#000000';
-        pdfContainer.style.fontFamily = 'Arial, sans-serif';
-        pdfContainer.style.boxSizing = 'border-box';
-        
-        // Ocultar bordes curvos o sombras en el PDF
-        pdfContainer.style.border = 'none';
-        pdfContainer.style.boxShadow = 'none';
-        
-        // ¡CRÍTICO PARA HTML2CANVAS! El elemento DEBE estar en el DOM para poder ser renderizado
-        // Lo ponemos en posición absoluta, arriba a la izquierda, pero DETRÁS del overlay de "Cargando"
-        pdfContainer.style.position = 'absolute';
-        pdfContainer.style.top = '0px';
-        pdfContainer.style.left = '0px';
-        pdfContainer.style.zIndex = '99990'; // El loading tiene 99999, así que esto queda oculto al usuario
-        document.body.appendChild(pdfContainer);
-
         const opt = {
             margin: 0.5,
             filename: `Recibo_${data.name.replace(/\s+/g, '_')}.pdf`,
@@ -829,23 +804,20 @@ window.generateReceipt = function(dataOrId) {
             html2canvas: { 
                 scale: 2, 
                 useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false
+                backgroundColor: '#ffffff'
             },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
         
-        // Generar a partir del contenedor limpio
+        // Generar el PDF directamente del template visible y estándar
         setTimeout(() => {
-            html2pdf().set(opt).from(pdfContainer).save().then(() => {
+            html2pdf().set(opt).from(template).save().then(() => {
                 loading.style.display = 'none';
-                template.style.display = 'none';
-                if (document.body.contains(pdfContainer)) document.body.removeChild(pdfContainer);
+                modalOverlay.style.display = 'none';
             }).catch(err => {
                 console.error("Error html2pdf:", err);
                 loading.style.display = 'none';
-                template.style.display = 'none';
-                if (document.body.contains(pdfContainer)) document.body.removeChild(pdfContainer);
+                modalOverlay.style.display = 'none';
             });
         }, 1000); 
 
@@ -853,8 +825,7 @@ window.generateReceipt = function(dataOrId) {
         setTimeout(() => {
             if (loading.style.display === 'flex') {
                 loading.style.display = 'none';
-                template.style.display = 'none';
-                if (document.body.contains(pdfContainer)) document.body.removeChild(pdfContainer);
+                modalOverlay.style.display = 'none';
                 alert("La generación tardó demasiado. Por favor, intenta de nuevo.");
             }
         }, 10000);
@@ -862,6 +833,8 @@ window.generateReceipt = function(dataOrId) {
     } catch (e) {
         console.error("Error en llenado de datos:", e);
         loading.style.display = 'none';
-        template.style.display = 'none';
+        if (document.getElementById('receipt-modal-overlay')) {
+            document.getElementById('receipt-modal-overlay').style.display = 'none';
+        }
     }
 };
